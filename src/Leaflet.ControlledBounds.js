@@ -273,9 +273,12 @@ L.Map.include({
 
 	getBounds: function() {
 		if (this._controlledBounds) {
-			return this._controlledBounds;
+			return L.latLngBounds(
+				this.containerPointToLatLng(this._controlledBounds.min),
+								  this.containerPointToLatLng(this._controlledBounds.max)
+			);
 		} else {
-			previousMethods.getBounds.call(this);
+			return previousMethods.getBounds.call(this);
 		}
 	}
 

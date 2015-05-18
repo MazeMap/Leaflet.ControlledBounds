@@ -1,7 +1,25 @@
 {
-  "name": "Leaflet.ControlledBounds",
-  "version": "0.1.0",
-  "dependencies": {
-    "leaflet": "~0.7.3"
-  }
+	"name": "Leaflet.ControlledBounds",
+	"version": "0.1.0",
+	"authors": [
+		"Iván Sánchez Ortega <ivan@mazemap.no>"
+	],
+	"description": "Restricts Leaflet's map bounds to area not covered by any map controls.",
+	"dependencies": {
+		"leaflet": "~0.7.3"
+	},
+	"main": "src/Leaflet.ControlledBounds.js",
+	"keywords": [
+		"leaflet",
+		"bounds"
+	],
+	"license": "Apache",
+	"homepage": "http://www.mazemap.com",
+	"ignore": [
+		"**/.*",
+		"node_modules",
+		"bower_components",
+		"test",
+		"tests"
+	],
 }

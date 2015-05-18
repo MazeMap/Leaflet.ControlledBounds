@@ -1,0 +1,9 @@
+{
+  "name": "Leaflet.ControlledBounds",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:IvanSanchez/Leaflet.ControlledBounds.git"
+  },
+  "license": "Beerware"
+}

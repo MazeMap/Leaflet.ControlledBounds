@@ -1,0 +1,7 @@
+{
+  "name": "Leaflet.ControlledBounds",
+  "version": "0.1.0",
+  "dependencies": {
+    "leaflet": "~0.7.3"
+  }
+}

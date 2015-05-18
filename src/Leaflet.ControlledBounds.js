@@ -26,6 +26,7 @@ L.Map.include({
 	},
 
 
+
 	_calculateControlledBounds: function() {
 		// Given the positions of the controls relative to the control container
 		//   (which is the controls' offsetParent), calculate corners which are good
@@ -42,81 +43,89 @@ L.Map.include({
 		var previousBottom = 0;
 		for (var i=0; i<this._controlCorners.topleft.children.length; i++) {
 			var child = this._controlCorners.topleft.children[i];
-			var childTop    = child.offsetTop;
-			var childLeft   = child.offsetLeft;
-			var childBottom = childTop + child.offsetHeight;
-			var childRight  = childLeft + child.offsetWidth;
+			if (child.offsetTop + child.offsetLeft + child.offsetWidth + child.offsetHeight > 0) {
+				var childTop    = child.offsetTop;
+				var childLeft   = child.offsetLeft;
+				var childBottom = childTop + child.offsetHeight;
+				var childRight  = childLeft + child.offsetWidth;
 
-			// Remove previous candidates which are completely obscured by the current control
-			for (var j=0; j<candidates.topleft.length; j++) {
-				if (candidates.topleft[j] && candidates.topleft[j].x < childRight) {
-					candidates.topleft[j] = null;
+				// Remove previous candidates which are completely obscured by the current control
+				for (var j=0; j<candidates.topleft.length; j++) {
+					if (candidates.topleft[j] && candidates.topleft[j].x < childRight) {
+						candidates.topleft[j] = null;
+					}
 				}
-			}
-			candidates.topleft.push(L.point(childRight, previousBottom));
-			candidates.topleft.push(L.point(0, childBottom));
+				candidates.topleft.push(L.point(childRight, previousBottom));
+				candidates.topleft.push(L.point(0, childBottom));
 
-			previousBottom = childBottom;
+				previousBottom = childBottom;
+			}
 		}
 
 		previousBottom = 0;
 		for (var i=0; i<this._controlCorners.topright.children.length; i++) {
 			var child = this._controlCorners.topright.children[i];
-			var childTop    = child.offsetTop;
-			var childLeft   = child.offsetLeft + this._controlCorners.topright.offsetLeft;
-			var childBottom = childTop + child.offsetHeight;
-			var childRight  = childLeft + child.offsetWidth;
+			if (child.offsetTop + child.offsetLeft + child.offsetWidth + child.offsetHeight > 0) {
+				var childTop    = child.offsetTop;
+				var childLeft   = child.offsetLeft + this._controlCorners.topright.offsetLeft;
+				var childBottom = childTop + child.offsetHeight;
+				var childRight  = childLeft + child.offsetWidth;
 
-			// Remove previous candidates which are completely obscured by the current control
-			for (var j=0; j<candidates.topright.length; j++) {
-				if (candidates.topright[j] && candidates.topright[j].x > childLeft) {
-					candidates.topright[j] = null;
+				// Remove previous candidates which are completely obscured by the current control
+				for (var j=0; j<candidates.topright.length; j++) {
+					if (candidates.topright[j] && candidates.topright[j].x > childLeft) {
+						candidates.topright[j] = null;
+					}
 				}
-			}
-			candidates.topright.push(L.point(childLeft, previousBottom));
-			candidates.topright.push(L.point(size.x, childBottom));
+				candidates.topright.push(L.point(childLeft, previousBottom));
+				candidates.topright.push(L.point(size.x, childBottom));
 
-			previousBottom = childBottom;
+				previousBottom = childBottom;
+			}
 		}
 
 		var previousTop = size.y;
 		for (var i=this._controlCorners.bottomleft.children.length - 1; i>=0; i--) {
 			var child = this._controlCorners.bottomleft.children[i];
-			var childTop    = child.offsetTop + this._controlCorners.bottomleft.offsetTop;
-			var childLeft   = child.offsetLeft;
-			var childBottom = childTop + child.offsetHeight;
-			var childRight  = childLeft + child.offsetWidth;
+			if (child.offsetTop + child.offsetLeft + child.offsetWidth + child.offsetHeight > 0) {
+				var childTop    = child.offsetTop + this._controlCorners.bottomleft.offsetTop;
+				var childLeft   = child.offsetLeft;
+				var childBottom = childTop + child.offsetHeight;
+				var childRight  = childLeft + child.offsetWidth;
 
-			// Remove previous candidates which are completely obscured by the current control
-			for (var j=0; j<candidates.bottomleft.length; j++) {
-				if (candidates.bottomleft[j] && candidates.bottomleft[j].x < childRight) {
-					candidates.bottomleft[j] = null;
+				// Remove previous candidates which are completely obscured by the current control
+				for (var j=0; j<candidates.bottomleft.length; j++) {
+					if (candidates.bottomleft[j] && candidates.bottomleft[j].x < childRight) {
+						candidates.bottomleft[j] = null;
+					}
 				}
-			}
-			candidates.bottomleft.push(L.point(childRight, previousTop));
-			candidates.bottomleft.push(L.point(0, childTop));
+				candidates.bottomleft.push(L.point(childRight, previousTop));
+				candidates.bottomleft.push(L.point(0, childTop));
 
-			previousTop = childTop;
+				previousTop = childTop;
+			}
 		}
 
 		previousTop = size.y;
 		for (var i=this._controlCorners.bottomright.children.length - 1; i>=0; i--) {
 			var child = this._controlCorners.bottomright.children[i];
-			var childTop    = child.offsetTop + this._controlCorners.bottomright.offsetTop;
-			var childLeft   = child.offsetLeft;
-			var childBottom = childTop + child.offsetHeight;
-			var childRight  = childLeft + child.offsetWidth;
+			if (child.offsetTop + child.offsetLeft + child.offsetWidth + child.offsetHeight > 0) {
+				var childTop    = child.offsetTop + this._controlCorners.bottomright.offsetTop;
+				var childLeft   = child.offsetLeft + this._controlCorners.bottomright.offsetLeft;
+				var childBottom = childTop + child.offsetHeight;
+				var childRight  = childLeft + child.offsetWidth;
 
-			// Remove previous candidates which are completely obscured by the current control
-			for (var j=0; j<candidates.bottomright.length; j++) {
-				if (candidates.bottomright[j] && candidates.bottomright[j].x > childLeft) {
-					candidates.bottomright[j] = null;
+				// Remove previous candidates which are completely obscured by the current control
+				for (var j=0; j<candidates.bottomright.length; j++) {
+					if (candidates.bottomright[j] && candidates.bottomright[j].x > childLeft) {
+						candidates.bottomright[j] = null;
+					}
 				}
-			}
-			candidates.bottomright.push(L.point(childLeft, previousTop));
-			candidates.bottomright.push(L.point(size.x, childTop));
+				candidates.bottomright.push(L.point(childLeft, previousTop));
+				candidates.bottomright.push(L.point(size.x, childTop));
 
-			previousTop = childTop;
+				previousTop = childTop;
+			}
 		}
 
 		candidates.topleft     = candidates.topleft.filter(function(i){return !!i;});
@@ -147,7 +156,7 @@ L.Map.include({
 						var right  = Math.min(tr.x, br.x);
 
 						var area = (bottom-top) * (right-left);
-// 						console.log(area, top, bottom, right, left);
+						// 						console.log(area, top, bottom, right, left);
 						if (area > maxArea) {
 							maxArea = area;
 							candidateBounds = L.bounds([[left, top],[right, bottom]]);
@@ -169,7 +178,7 @@ L.Map.include({
 		var deltaX = (oldCenter.x - newCenter.x) ;
 		var deltaY = (oldCenter.y - newCenter.y) ;
 		this.panBy([deltaX, deltaY]);
-		console.log(oldCenter, newCenter, deltaX, deltaY);
+// 		console.log(oldCenter, newCenter, deltaX, deltaY);
 
 
 		// Precalculate the absolute offset between the center of the map and
@@ -246,8 +255,8 @@ L.Map.include({
 
 		var zoom = this.getMinZoom() - (inside ? 1 : 0),
 			maxZoom = this.getMaxZoom(),
-			vp = this._controlledBounds,
-			size = (vp) ? L.point(vp.clientWidth, vp.clientHeight) : this.getSize(),
+			cb = this._controlledBounds,
+			size = (cb) ? L.point(cb.max.x - cb.min.x, cb.max.y - cb.min.y) : this.getSize(),
 
 			nw = bounds.getNorthWest(),
 			se = bounds.getSouthEast(),
@@ -275,18 +284,27 @@ L.Map.include({
 		if (this._controlledBounds) {
 			return L.latLngBounds(
 				this.containerPointToLatLng(this._controlledBounds.min),
-								  this.containerPointToLatLng(this._controlledBounds.max)
+				this.containerPointToLatLng(this._controlledBounds.max)
 			);
 		} else {
 			return previousMethods.getBounds.call(this);
 		}
-	}
+	},
 
+	_delayedCalculateControlledBounds: function(){
+		console.log('_delayedCalculateControlledBounds');
+		if (this._delayedControlledBoundsCalculation) {
+			window.clearTimeout(this._delayedControlledBoundsCalculation);
+		}
+
+		this._delayedControlledBoundsCalculation = window.setTimeout(
+			this._calculateControlledBounds.bind(this),100);
+	}
 });
 
 
 L.Map.addInitHook(function(){
-	this.on('resize', this._calculateControlledBounds, this);
+	this.on('resize', this._delayedCalculateControlledBounds, this);
 });
 
 
@@ -294,7 +312,7 @@ L.Map.addInitHook(function(){
 L.Control.include({
 	addTo: function(map) {
 		previousMethods.controlAddTo.call(this, map);
-		map._controlledBounds = null;
+		map._delayedCalculateControlledBounds();
 		return this;
 	},
 
@@ -302,7 +320,7 @@ L.Control.include({
 		if (this._map) {
 			var __map = this._map;
 			previousMethods.controlRemove.call(this);
-			__map._controlledBounds = null;
+			__map._delayedCalculateControlledBounds();
 			return this;
 		} else {
 			return previousMethods.controlRemove.call(this);

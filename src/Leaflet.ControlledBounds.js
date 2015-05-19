@@ -222,13 +222,9 @@ L.Map.include({
 // 		this._calculateControlledBounds();
 
 		if (this._controlledBounds) {
-			console.log(center);
 			var point = this.project(center, this._limitZoom(zoom));
-			console.log(point);
 			point = point.add(this.getOffset());
-			console.log(point);
 			center = this.unproject(point, this._limitZoom(zoom));
-			console.log(center);
 		}
 
 		return previousMethods.setView.call(this, center, zoom, options);
@@ -292,7 +288,6 @@ L.Map.include({
 	},
 
 	_delayedCalculateControlledBounds: function(){
-		console.log('_delayedCalculateControlledBounds');
 		if (this._delayedControlledBoundsCalculation) {
 			window.clearTimeout(this._delayedControlledBoundsCalculation);
 		}

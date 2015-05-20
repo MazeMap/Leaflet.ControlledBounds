@@ -156,7 +156,7 @@ L.Map.include({
 						var right  = Math.min(tr.x, br.x);
 
 						var area = (bottom-top) * (right-left);
-						// 						console.log(area, top, bottom, right, left);
+// 						console.log(area, top, bottom, right, left);
 						if (area > maxArea) {
 							maxArea = area;
 							candidateBounds = L.bounds([[left, top],[right, bottom]]);
@@ -175,14 +175,9 @@ L.Map.include({
 			oldCenter = containerCenter;
 		}
 		var newCenter = candidateBounds.getCenter();
-		var deltaX = (oldCenter.x - newCenter.x) ;
-		var deltaY = (oldCenter.y - newCenter.y) ;
-		this.panBy([deltaX, deltaY]);
-// 		console.log(oldCenter, newCenter, deltaX, deltaY);
-
 
 		// Precalculate the absolute offset between the center of the map and
-		//   the center of the controlled area
+		//   the center of the controlled area, for use in setView
 		this._controlledOffset = L.point( [containerCenter.x - newCenter.x ,
 		                                   containerCenter.y - newCenter.y ]);
 
@@ -287,27 +282,60 @@ L.Map.include({
 		}
 	},
 
-	_delayedCalculateControlledBounds: function(){
-		if (this._delayedControlledBoundsCalculation) {
-			window.clearTimeout(this._delayedControlledBoundsCalculation);
+	invalidateSize: function (options) {
+		if (!this._loaded) { return this; }
+
+		options = L.extend({
+			animate: false,
+			pan: true
+		}, options === true ? {animate: true} : options);
+
+		var oldCenter = this._lastControlledBounds.getCenter();
+		var oldSize = L.point(this._controlledBounds.max.x - this._controlledBounds.min.x,
+		                      this._controlledBounds.max.y - this._controlledBounds.min.y);
+// 		var oldSize = this.getSize();
+		this._sizeChanged = true;
+		this._initialCenter = null;
+		this._calculateControlledBounds();
+
+		var newCenter = this._lastControlledBounds.getCenter();
+		var newSize = L.point(this._controlledBounds.max.x - this._controlledBounds.min.x,
+							  this._controlledBounds.max.y - this._controlledBounds.min.y);
+
+		var offset = oldCenter.subtract(newCenter);
+
+		if (!offset.x && !offset.y) { return this; }
+
+		if (options.animate && options.pan) {
+			this.panBy(offset);
+
+		} else {
+			if (options.pan) {
+				this._rawPanBy(offset);
+			}
+
+			this.fire('move');
+
+			if (options.debounceMoveend) {
+				clearTimeout(this._sizeTimer);
+				this._sizeTimer = setTimeout(L.bind(this.fire, this, 'moveend'), 200);
+			} else {
+				this.fire('moveend');
+			}
 		}
 
-		this._delayedControlledBoundsCalculation = window.setTimeout(
-			this._calculateControlledBounds.bind(this),100);
+		return this.fire('resize', {
+			oldSize: oldSize,
+			newSize: newSize
+		});
 	}
+
 });
-
-
-L.Map.addInitHook(function(){
-	this.on('resize', this._delayedCalculateControlledBounds, this);
-});
-
-
 
 L.Control.include({
 	addTo: function(map) {
 		previousMethods.controlAddTo.call(this, map);
-		map._delayedCalculateControlledBounds();
+		map.invalidateSize({animate: true});
 		return this;
 	},
 
@@ -315,7 +343,7 @@ L.Control.include({
 		if (this._map) {
 			var __map = this._map;
 			previousMethods.controlRemove.call(this);
-			__map._delayedCalculateControlledBounds();
+			__map.invalidateSize({animate: true});
 			return this;
 		} else {
 			return previousMethods.controlRemove.call(this);

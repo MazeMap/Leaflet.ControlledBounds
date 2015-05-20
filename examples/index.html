@@ -37,8 +37,11 @@
 		})
         base.addTo(map);
 
+
+		var lastPixelBounds = null;
         function displayBounds() {
 			var bounds = map.getControlledBounds();
+			if (JSON.stringify(bounds) === JSON.stringify(lastPixelBounds)) return;
 // 			console.log('pixel bounds: ', bounds);
 			// Four <div>s so that the user can still scroll in the map
 			var b1 = document.getElementById('b1');	// top
@@ -58,26 +61,42 @@
 			c.style.left = (bounds.min.x + bounds.max.x) / 2 - 2 + 'px';
 
 
-			console.log("Map bounds after controls have been added: ",map.getBounds().toBBoxString());
-			console.log("Map center: ",map.getCenter());
+			console.log("Map bounds now: ",map.getBounds().toBBoxString());
+// 			console.log("Map center: ",map.getCenter());
+// 			lastPixelBounds = bounds;
 		}
 
-		displayBounds();
+		window.setInterval(function(){
+			displayBounds();
+		}, 250);
 
         window.setTimeout(function(){
 			L.control.attribution().addTo(map);
 			L.control.zoom().addTo(map);
 // 			L.control.zoom().addTo(map);
-			displayBounds();
 		}, 2000 );
 
         window.setTimeout(function(){
 			L.control.layers([base]).addTo(map);
 			L.control.scale().addTo(map);
 			L.control.layers([base],[],{ position:'bottomleft' }).addTo(map);
-			displayBounds();
-		}, 5000);
+		}, 2050);
 
+
+
+		function portrait() {
+			var mapDiv = document.getElementById('map');
+			mapDiv.style.width  = '400px';
+			mapDiv.style.height = '600px';
+			map.invalidateSize({debounceMoveend: true});
+		}
+
+		function landscape() {
+			var mapDiv = document.getElementById('map');
+			mapDiv.style.width  = '600px';
+			mapDiv.style.height = '400px';
+			map.invalidateSize({debounceMoveend: true});
+		}
 
     </script>
 
@@ -86,6 +105,8 @@
     <button onclick='map.setView(Trondheim, 16)'>Trondheim</button>
     <button onclick='map.zoomIn()'>Zoom in</button>
     <button onclick='map.zoomOut()'>Zoom out</button>
+    <button onclick='portrait()'>Portrait</button>
+    <button onclick='landscape()'>Landscape</button>
     </div>
 
 

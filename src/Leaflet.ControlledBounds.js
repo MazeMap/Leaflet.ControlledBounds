@@ -9,7 +9,7 @@ if (typeof previousMethods === 'undefined') {
 		getBounds: L.Map.prototype.getBounds,
 
 		controlAddTo: L.Control.prototype.addTo,
-		controlRemove: L.Control.prototype.remove
+		controlRemove: L.Control.prototype.removeFrom
 	};
 }
 
@@ -290,10 +290,17 @@ L.Map.include({
 			pan: true
 		}, options === true ? {animate: true} : options);
 
-		var oldCenter = this._lastControlledBounds.getCenter();
-		var oldSize = L.point(this._controlledBounds.max.x - this._controlledBounds.min.x,
-		                      this._controlledBounds.max.y - this._controlledBounds.min.y);
-// 		var oldSize = this.getSize();
+		var oldCenter, oldSize;
+		if (this._controlledBounds) {
+			oldCenter = this._controlledBounds ? this._controlledBounds.getCenter() : this.getSize().divideBy(2).round();
+			oldSize = L.point(this._controlledBounds.max.x -
+			                  this._controlledBounds.min.x,
+			                  this._controlledBounds.max.y -
+			                  this._controlledBounds.min.y);
+		} else {
+			oldSize = this.getSize();
+			oldCenter = oldSize.divideBy(2).round();
+		}
 		this._sizeChanged = true;
 		this._initialCenter = null;
 		this._calculateControlledBounds();
@@ -339,14 +346,14 @@ L.Control.include({
 		return this;
 	},
 
-	remove: function() {
+	removeFrom: function(map) {
 		if (this._map) {
 			var __map = this._map;
-			previousMethods.controlRemove.call(this);
+			previousMethods.controlRemove.call(this, map);
 			__map.invalidateSize({animate: true});
 			return this;
 		} else {
-			return previousMethods.controlRemove.call(this);
+			return previousMethods.controlRemove.call(this, map);
 		}
 	}
 });

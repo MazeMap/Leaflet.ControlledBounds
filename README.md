@@ -19,9 +19,9 @@ Then, the map will center itself in the center of that DIV when calling setView,
 
 ## Limitations
 
-The plugin will not detect changes in the size (or position) of the map controls. If the controls change under controlled circumstances (e.g. panels expanding), fire the map's `resize` event:
+The plugin will not detect changes in the size (or position) of the map controls. If the controls change under controlled circumstances (e.g. panels expanding), run `invalidateSize()`:
 
-	map.fire('resize');
+	map.invalidateSize();
 
 The plugin has only been tested with Leaflet 0.7.x. It will most probably not work well with Leaflet 1.0's `flyTo` and `flyToBounds` methods.
 

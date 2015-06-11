@@ -138,7 +138,7 @@ L.Map.include({
 
 		// Try out all combinations of the candidate corners, stick with the one that gives
 		//   out the biggest area.
-		var maxArea = 0;
+		var maxArea = -Infinity;
 		var candidateBounds = null;
 
 		for (i=0; i<candidates.topleft.length; i++) {

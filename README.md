@@ -11,7 +11,7 @@ Try the [example page](http://mazemap.github.io/Leaflet.ControlledBounds/example
 
 Include the javascript file after including the main Leaflet library:
 
-	<script src="L.activearea.js"></script>
+	<script src="Leaflet.ControlledBounds.js"></script>
 
 The useful bounds of the map will be cut down to the largest area not covered by any map controls (instances of L.Control added to the map).
 

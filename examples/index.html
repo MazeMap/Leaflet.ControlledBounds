@@ -2,9 +2,15 @@
 <html>
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+<!--     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script> -->
+<!-- 	<script src="http://cdn.leafletjs.com/leaflet-1.0.0-b1/leaflet.js"></script> -->
+	<script src="../../Leaflet/dist/leaflet-src.js"></script>
+
+<!--     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" /> -->
+<!--     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-1.0.0-b1/leaflet.css" /> -->
+    <link rel="stylesheet" href="../../Leaflet/dist/leaflet.css" />
+
     <script src="../src/Leaflet.ControlledBounds.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -23,7 +29,11 @@
         var Madrid = [40.383333,-3.716667];
         var Trondheim = [63.429722,10.393333];
 
-        var map = new L.Map('map', {zoomControl: false, attributionControl: false}).setView(Madrid, 2);
+        var map = new L.Map('map', {
+			zoomControl: false,
+			attributionControl: false,
+// 			zoomAnimation: false
+			}).setView(Madrid, 2);
 //         map.scrollWheelZoom.disable();
 
 		console.log("Map bounds before controls have been added: ",map.getBounds().toBBoxString());
@@ -31,18 +41,20 @@
         var markers = L.featureGroup([L.marker(Madrid), L.marker(Trondheim)]);
         markers.addTo(map);
 
-        var base = L.tileLayer('http://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
-			attribution: '<a href="https://www.mapbox.com/about/maps/">Terms and Feedback</a>',
-			id: 'examples.map-20v6611k'
-		})
+		var base = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
+		});
         base.addTo(map);
 
 
 		var lastPixelBounds = null;
         function displayBounds() {
 			var bounds = map.getControlledBounds();
-			if (JSON.stringify(bounds) === JSON.stringify(lastPixelBounds)) return;
-// 			console.log('pixel bounds: ', bounds);
+			if (JSON.stringify(bounds) === JSON.stringify(lastPixelBounds)) {
+				L.Util.requestAnimFrame(displayBounds);
+				return;
+			}
+			console.log('pixel bounds: ', bounds);
 			// Four <div>s so that the user can still scroll in the map
 			var b1 = document.getElementById('b1');	// top
 			var b2 = document.getElementById('b2');	// bottom
@@ -52,9 +64,9 @@
 			b1.style.top   = b3.style.top   = b4.style.top   = bounds.min.y + 'px';
 			b1.style.left  = b2.style.left  = b3.style.left  = bounds.min.x + 'px';
 			b1.style.width = b2.style.width = bounds.max.x - bounds.min.x - 2 + 'px';
-							b4.style.left  = bounds.max.x                - 2 + 'px';
+			                 b4.style.left  = bounds.max.x                - 2 + 'px';
 			b3.style.height= b4.style.height= bounds.max.y - bounds.min.y - 2 + 'px';
-							b2.style.top   = bounds.max.y                - 2 + 'px';
+			                 b2.style.top   = bounds.max.y                - 2 + 'px';
 	// 		b.style.height= bounds.max.y - bounds.min.y - 2 + 'px';
 
 			c.style.top  = (bounds.min.y + bounds.max.y) / 2 - 2 + 'px';
@@ -63,24 +75,29 @@
 
 			console.log("Map bounds now: ",map.getBounds().toBBoxString());
 // 			console.log("Map center: ",map.getCenter());
-// 			lastPixelBounds = bounds;
+			lastPixelBounds = bounds;
+
+			L.Util.requestAnimFrame(displayBounds);
 		}
 
-		window.setInterval(function(){
-			displayBounds();
-		}, 250);
+		displayBounds();
+
 
         window.setTimeout(function(){
 			L.control.attribution().addTo(map);
 			L.control.zoom().addTo(map);
+			L.control.attribution({ position:'topleft' }).addTo(map);
 // 			L.control.zoom().addTo(map);
-		}, 2000 );
+		}, 200 );
 
         window.setTimeout(function(){
 			L.control.layers([base]).addTo(map);
 			L.control.scale().addTo(map);
+			L.control.scale().addTo(map);
+			L.control.scale().addTo(map);
+			L.control.scale().addTo(map);
 			L.control.layers([base],[],{ position:'bottomleft' }).addTo(map);
-		}, 2050);
+		}, 250);
 
 
 
@@ -101,8 +118,8 @@
     </script>
 
     <div style='clear:both'>
-    <button onclick='map.setView(Madrid, 16)'>Madrid</button>
-    <button onclick='map.setView(Trondheim, 16)'>Trondheim</button>
+    <button onclick='map.setView(Madrid, 3)'>Madrid</button>
+    <button onclick='map.setView(Trondheim, 3)'>Trondheim</button>
     <button onclick='map.zoomIn()'>Zoom in</button>
     <button onclick='map.zoomOut()'>Zoom out</button>
     <button onclick='portrait()'>Portrait</button>

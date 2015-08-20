@@ -6,7 +6,7 @@
 	],
 	"description": "Restricts Leaflet's map bounds to area not covered by any map controls.",
 	"dependencies": {
-		"leaflet": "~0.7.3"
+		"leaflet": "~1.0.0"
 	},
 	"main": "src/Leaflet.ControlledBounds.js",
 	"keywords": [

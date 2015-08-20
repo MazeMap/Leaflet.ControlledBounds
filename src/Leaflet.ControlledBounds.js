@@ -174,21 +174,6 @@
 			return this._controlledBounds = candidateBounds;
 		},
 
-		getBounds: function() {
-			if (!this._controlledBounds) {
-				this._calculateControlledBounds();
-			}
-			var origin = this.getPixelOrigin();
-
-			var min = this.unproject([origin.x + this._controlledBounds.min.x,
-									origin.y + this._controlledBounds.min.y]);
-			var max = this.unproject([origin.x + this._controlledBounds.max.x,
-									origin.y + this._controlledBounds.max.y]);
-
-			return new L.LatLngBounds(min, max);
-		},
-
-
 		getOffset: function() {
 			return this._controlledOffset ? this._controlledOffset : L.point(0, 0);
 		},

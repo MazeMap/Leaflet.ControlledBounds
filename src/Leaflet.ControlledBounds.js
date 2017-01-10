@@ -21,18 +21,29 @@
 			// This assumes that all corner controls are placed vertically to one another.
 			// Oh $deity, what a mess of spaghetti code and casuistics.
 			var size = this.getSize();
-			var candidates = {
+			var corners = (this._controlCorners.topright.offsetLeft && this._controlCorners.bottomleft.offsetTop && this._controlCorners.bottomright.offsetLeft && this._controlCorners.bottomright.offsetTop) ? {
+				topleft:     [L.point(this._controlCorners.topleft.offsetLeft, this._controlCorners.topleft.offsetTop)],
+				topright:    [L.point(this._controlCorners.topright.offsetLeft + this._controlCorners.topright.offsetWidth, this._controlCorners.topright.offsetTop)],
+				bottomleft:  [L.point(this._controlCorners.bottomleft.offsetLeft, this._controlCorners.bottomleft.offsetTop + this._controlCorners.bottomleft.offsetHeight)],
+				bottomright: [L.point(this._controlCorners.bottomright.offsetLeft + this._controlCorners.bottomright.offsetWidth, this._controlCorners.bottomright.offsetTop + this._controlCorners.bottomright.offsetHeight)]
+			} : {
 				topleft:     [L.point(0, 0)],
 				topright:    [L.point(size.x, 0)],
 				bottomleft:  [L.point(0, size.y)],
 				bottomright: [L.point(size.x, size.y)]
 			};
-			var previousBottom = 0;
+			var candidates = {
+				topleft:     [L.point(corners.topleft[0].x, corners.topleft[0].y)],
+				topright:    [L.point(corners.topright[0].x, corners.topright[0].y)],
+				bottomleft:  [L.point(corners.bottomleft[0].x, corners.bottomleft[0].y)],
+				bottomright: [L.point(corners.bottomright[0].x, corners.bottomright[0].y)]
+			};
+			var previousBottom = corners.topleft[0].y;
 			for (var i=0; i<this._controlCorners.topleft.children.length; i++) {
 				var child = this._controlCorners.topleft.children[i];
 				if (child.offsetTop + child.offsetLeft + child.offsetWidth + child.offsetHeight > 0) {
 					var childTop    = child.offsetTop;
-					var childLeft   = child.offsetLeft;
+					var childLeft   = child.offsetLeft + this._controlCorners.topleft.offsetLeft;
 					var childBottom = childTop + child.offsetHeight;
 					var childRight  = childLeft + child.offsetWidth;
 
@@ -43,13 +54,13 @@
 						}
 					}
 					candidates.topleft.push(L.point(childRight, previousBottom));
-					candidates.topleft.push(L.point(0, childBottom));
+					candidates.topleft.push(L.point(corners.topleft[0].x, childBottom));
 
 					previousBottom = childBottom;
 				}
 			}
 
-			previousBottom = 0;
+			previousBottom = corners.topright[0].y;
 			for (var i=0; i<this._controlCorners.topright.children.length; i++) {
 				var child = this._controlCorners.topright.children[i];
 				if (child.offsetTop + child.offsetLeft + child.offsetWidth + child.offsetHeight > 0) {
@@ -65,18 +76,18 @@
 						}
 					}
 					candidates.topright.push(L.point(childLeft, previousBottom));
-					candidates.topright.push(L.point(size.x, childBottom));
+					candidates.topright.push(L.point(corners.topright[0].x, childBottom));
 
 					previousBottom = childBottom;
 				}
 			}
 
-			var previousTop = size.y;
+			var previousTop = corners.bottomleft[0].y;
 			for (var i=this._controlCorners.bottomleft.children.length - 1; i>=0; i--) {
 				var child = this._controlCorners.bottomleft.children[i];
 				if (child.offsetTop + child.offsetLeft + child.offsetWidth + child.offsetHeight > 0) {
 					var childTop    = child.offsetTop + this._controlCorners.bottomleft.offsetTop;
-					var childLeft   = child.offsetLeft;
+					var childLeft   = child.offsetLeft + this._controlCorners.bottomleft.offsetLeft;
 					var childBottom = childTop + child.offsetHeight;
 					var childRight  = childLeft + child.offsetWidth;
 
@@ -87,13 +98,13 @@
 						}
 					}
 					candidates.bottomleft.push(L.point(childRight, previousTop));
-					candidates.bottomleft.push(L.point(0, childTop));
+					candidates.bottomleft.push(L.point(corners.bottomleft[0].x, childTop));
 
 					previousTop = childTop;
 				}
 			}
 
-			previousTop = size.y;
+			previousTop = corners.bottomright[0].y;
 			for (var i=this._controlCorners.bottomright.children.length - 1; i>=0; i--) {
 				var child = this._controlCorners.bottomright.children[i];
 				if (child.offsetTop + child.offsetLeft + child.offsetWidth + child.offsetHeight > 0) {
@@ -109,7 +120,7 @@
 						}
 					}
 					candidates.bottomright.push(L.point(childLeft, previousTop));
-					candidates.bottomright.push(L.point(size.x, childTop));
+					candidates.bottomright.push(L.point(corners.bottomright[0].x, childTop));
 
 					previousTop = childTop;
 				}
@@ -121,7 +132,6 @@
 			candidates.bottomright = candidates.bottomright.filter(function(i){return !!i;});
 
 // 			console.log(candidates);
-
 
 			// Try out all combinations of the candidate corners, stick with the one that gives
 			//   out the biggest area.
